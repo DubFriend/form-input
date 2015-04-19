@@ -23,8 +23,8 @@ exports.input = {
 
 	inputPlucksValueAttributeFromName: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({ 
-				name: 'foo', 
+			this.bootstrapInput.input({
+				name: 'foo',
 				value: { a: 'a', foo: 'bar' }
 			}),
 			'<input name="foo" value="bar"/>'
@@ -34,11 +34,98 @@ exports.input = {
 
 	inputOmitsValueAttributeIfObjectAndCannotPluckFromName: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({ 
-				name: 'foo', 
+			this.bootstrapInput.input({
+				name: 'foo',
 				value: { a: 'a', b: 'bar' }
 			}),
 			'<input name="foo"/>'
+		);
+		test.done();
+	},
+
+	selectBasic: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.select({
+				a: 'b',
+				options: [{ label: 'foo', value: 'a' }]
+			}),
+			'<select a="b">' +
+				'<option value="a">foo</option>' +
+			'</select>'
+		);
+		test.done();
+	},
+
+	selectWithValue: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.select({
+				options: [
+					{ label: 'bar', value: 'b' },
+					{ label: 'foo', value: 'a' }
+				],
+				value: 'a'
+			}),
+			'<select >' +
+				'<option value="b">bar</option>' +
+				'<option value="a" selected>foo</option>' +
+			'</select>'
+		);
+		test.done();
+	},
+
+	textAreaWithValue: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.textarea({
+				name: 'foo',
+				value: { foo: 'bar' }
+			}),
+			'<textarea name="foo">bar</textarea>'
+		);
+		test.done();
+	},
+
+	inputWithArrayOfValuesAndChecked: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.input({
+				value: ['a', 'b'],
+				checked: 'b'
+			}),
+			'<input value="a"/>' +
+			'<input value="b" checked/>'
+		);
+		test.done();
+	},
+
+	inputWithArrayOfValuesAndArrayOfChecked: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.input({
+				value: ['a', 'b', 'c'],
+				checked: ['a', 'c']
+			}),
+			'<input value="a" checked/>' +
+			'<input value="b"/>' +
+			'<input value="c" checked/>'
+		);
+		test.done();
+	},
+
+	inputsWithArrayOfLabeledValues: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.input({
+				type: 'baz',
+				value: [
+					{ label: 'foo', value: 'a' },
+					{ label: 'bar', value: 'b' }
+				]
+			}),
+			'<label class="baz-inline">' +
+				'foo' +
+				'<input type="baz" value="a"/>' +
+			'</label>' +
+			'<label class="baz-inline">' +
+				'bar' +
+				'<input type="baz" value="b"/>' +
+			'</label>'
 		);
 		test.done();
 	},
@@ -109,7 +196,7 @@ exports.input = {
 		test.done();
 	},
 
-	inputGroupWithAName: function (test) {
+	inputGroupWithNameAndFeedback: function (test) {
 		test.strictEqual(
 			this.bootstrapInput.group({
 				label: 'bar',
@@ -124,6 +211,49 @@ exports.input = {
 				'<div>' +
 					'<input name="foo" value="b"/>' +
 					'<span>c</span>' +
+				'</div>' +
+			'</div>'
+		);
+		test.done();
+	},
+
+	selectGroupWithName: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.group({
+				label: 'bar',
+				name: 'foo',
+				select: {
+					options: [
+						{ label: 'bar', value: 'b' },
+						{ label: 'foo', value: 'a' }
+					],
+					value: 'a'
+				}
+			}),
+			'<div>' +
+				'<label>bar</label>' +
+				'<div>' +
+					'<select name="foo">' +
+						'<option value="b">bar</option>' +
+						'<option value="a" selected>foo</option>' +
+					'</select>' +
+				'</div>' +
+			'</div>'
+		);
+		test.done();
+	},
+
+	textareaGroupWithName: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.group({
+				label: 'bar',
+				name: 'foo',
+				textarea: { value: 'a' }
+			}),
+			'<div>' +
+				'<label>bar</label>' +
+				'<div>' +
+					'<textarea name="foo">a</textarea>' +
 				'</div>' +
 			'</div>'
 		);

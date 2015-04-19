@@ -4,18 +4,47 @@ var bootstrapInput = function (fig) {
     fig = fig || {};
 
     var self = {};
-    
+
     var feedbackOpen = fig.feedbackOpen  || '<span>';
     var feedbackClose = fig.feedbackClose  || '</span>';
-    
+
     var labelOpen = fig.labelOpen  || '<label>';
     var labelClose = fig.labelClose  || '</label>';
-    
+
     var groupOpen = fig.groupOpen  || '<div>';
     var groupClose = fig.groupClose  || '</div>';
 
     var groupControlOpen = fig.groupControlOpen  || '<div>';
     var groupControlClose = fig.groupControlClose  || '</div>';
+
+    var resolveValueFromAttr = function (attr) {
+        if(isObject(attr.value)) {
+            if(
+                attr.name !== undefined &&
+                attr.value[attr.name] !== undefined
+            ) {
+                return attr.value[attr.name];
+            }
+        }
+        else {
+            return attr.value;
+        }
+    };
+
+    var buildAttributes = function (attr) {
+        return filterUndefined(mapToArray(attr, function (val, key) {
+            var valueAttrValue;
+            if(key === 'value') {
+                valueAttrValue = resolveValueFromAttr(attr);
+                if(valueAttrValue) {
+                    return 'value="' + valueAttrValue + '"';
+                }
+            }
+            else {
+                return val === undefined ? key : key + '="' + val +'"';
+            }
+        })).join(' ');
+    };
 
     self.feedback = function (fig, name) {
         if(isObject(fig)) {
@@ -32,34 +61,82 @@ var bootstrapInput = function (fig) {
             }, '') + '</ul>');
         }
         else {
-            return feedbackOpen + fig + feedbackClose;    
+            return feedbackOpen + fig + feedbackClose;
         }
     };
-    
+
     self.input = function (attr) {
-        return '<input ' + filterUndefined(mapToArray(attr, function (val, key) {
-            if(key === 'value' && isObject(val)) {
-                if(
-                    attr.name !== undefined &&
-                    val[attr.name] !== undefined
-                ) {
-                    return key + '="' + val[attr['name']] + '"';
+        if(isArray(attr.value)) {
+            return reduce(attr.value, function (carry, value) {
+                if(isObject(value)) {
+                    return carry + '<label class="' + attr.type + '-inline">' +
+                        value.label +
+                        self.input(union(attr, { value: value.value })) +
+                    '</label>';
                 }
-            }
-            else {
-                return val === undefined ? key : key + '="' + val +'"';
-            }
-        })).join(' ') + '/>';
+                else {
+                    return carry + self.input(union(attr, { value: value }));
+                }
+            }, '');
+        }
+        else if(isArray(attr.checked) && inArray(attr.checked, attr.value)) {
+            return self.input(union(attr, { checked: undefined }));
+        }
+        else if(attr.value !== undefined && attr.value === attr.checked) {
+            return self.input(union(attr, { checked: undefined }));
+        }
+        else if(attr.checked !== undefined) {
+            return self.input(excludedSet(attr, ['checked']));
+        }
+        else {
+            return '<input ' + buildAttributes(attr) + '/>';
+        }
+    };
+
+    self.select = function (attr) {
+        var selected = resolveValueFromAttr(attr);
+        var isOptionSelected = function (option) {
+            return selected === option.value;
+        };
+
+        return '<select ' + buildAttributes(excludedSet(attr, ['options', 'value'])) + '>' +
+            reduce(attr.options, function (carry, option) {
+                return carry + '<option value="' + option.value + '"' +
+                    (isOptionSelected(option) ? ' selected' : '') + '>' +
+                    option.label +
+                '</option>';
+            }, '') +
+        '</select>';
+    };
+
+    self.textarea = function (attr) {
+        var value = resolveValueFromAttr(attr);
+        return '<textarea ' + buildAttributes(excludedSet(attr, ['value'])) + '>' +
+            (value ? value : '') +
+        '</textarea>';
     };
 
     self.group = function (fig) {
-        var controlFig = fig.name ? union({ name: fig.name }, fig.input) : fig.input;
-        var controlText = self.input(controlFig);
+
         var feedbackText = fig.feedback ? self.feedback(fig.feedback, fig.name) : '';
         var labelText = fig.label ? labelOpen + fig.label + labelClose : '';
 
-        return groupOpen + 
-               labelText +
+        var controlFig = fig.input || fig.select || fig.textarea;
+        controlFig = fig.name ? union({ name: fig.name }, controlFig) : controlFig;
+
+        var controlText;
+        if(fig.input) {
+            controlText = self.input(controlFig);
+        }
+        else if(fig.select) {
+            controlText = self.select(controlFig);
+        }
+        else if(fig.textarea) {
+            controlText = self.textarea(controlFig);
+        }
+
+        return groupOpen +
+               labelText  +
                groupControlOpen +
                controlText +
                feedbackText +
@@ -77,7 +154,7 @@ if(typeof exports !== 'undefined') {
         exports = module.exports = bootstrapInput;
     }
     exports.bootstrapInput = bootstrapInput;
-} 
+}
 else {
     root.bootstrapInput = bootstrapInput;
 }
