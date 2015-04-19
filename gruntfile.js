@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 
         watch: {
             scripts: {
-                files: ['**/*', '!bootstrap-input.js', '!bootstrap-input.min.js'],
+                files: ['**/*', '!form-input.js', '!form-input.min.js'],
                 tasks: ['concat', 'uglify', 'nodeunit'],
                 options: { spawn: true }
             }

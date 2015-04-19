@@ -1,5 +1,5 @@
-// bootstrap-input version 0.0.0
-// https://github.com/DubFriend/bootstrap-input
+// form-input version 0.1.0
+// https://github.com/DubFriend/form-input
 // (MIT) 19-04-2015
 // Brian Detering
 (function () {
@@ -152,7 +152,7 @@ var generateUniqueID = (function () {
         return count += 1;
     };
 }());
-var bootstrapInput = function (fig) {
+var formInputGenerator = function (fig) {
     'use strict';
 
     fig = fig || {};
@@ -318,11 +318,11 @@ var bootstrapInput = function (fig) {
 
 if(typeof exports !== 'undefined') {
     if(typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = bootstrapInput;
+        exports = module.exports = formInputGenerator;
     }
-    exports.bootstrapInput = bootstrapInput;
+    exports.formInputGenerator = formInputGenerator;
 }
 else {
-    root.bootstrapInput = bootstrapInput;
+    root.formInputGenerator = formInputGenerator;
 }
 }).call(this);

@@ -1,4 +1,4 @@
-var bootstrapInput = function (fig) {
+var formInputGenerator = function (fig) {
     'use strict';
 
     fig = fig || {};
@@ -164,10 +164,10 @@ var bootstrapInput = function (fig) {
 
 if(typeof exports !== 'undefined') {
     if(typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = bootstrapInput;
+        exports = module.exports = formInputGenerator;
     }
-    exports.bootstrapInput = bootstrapInput;
+    exports.formInputGenerator = formInputGenerator;
 }
 else {
-    root.bootstrapInput = bootstrapInput;
+    root.formInputGenerator = formInputGenerator;
 }

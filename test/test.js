@@ -1,13 +1,13 @@
-var bootstrapInputGenerator = require('../bootstrap-input');
+var formInputGenerator = require('../form-input');
 exports.input = {
 	setUp: function (done) {
-		this.bootstrapInput = bootstrapInputGenerator();
+		this.formInput = formInputGenerator();
 		done();
 	},
 
 	inputBasic: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({ a: 'b' }),
+			this.formInput.input({ a: 'b' }),
 			'<input a="b"/>'
 	    );
 		test.done();
@@ -15,7 +15,7 @@ exports.input = {
 
 	inputAttributeWithUndefinedValueDoesNotRenderValue: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({ b: undefined }),
+			this.formInput.input({ b: undefined }),
 			'<input b/>'
 	    );
 		test.done();
@@ -23,7 +23,7 @@ exports.input = {
 
 	inputPlucksValueAttributeFromName: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({
+			this.formInput.input({
 				name: 'foo',
 				value: { a: 'a', foo: 'bar' }
 			}),
@@ -34,7 +34,7 @@ exports.input = {
 
 	inputOmitsValueAttributeIfObjectAndCannotPluckFromName: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({
+			this.formInput.input({
 				name: 'foo',
 				value: { a: 'a', b: 'bar' }
 			}),
@@ -45,7 +45,7 @@ exports.input = {
 
 	selectBasic: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.select({
+			this.formInput.select({
 				a: 'b',
 				options: [{ label: 'foo', value: 'a' }]
 			}),
@@ -58,7 +58,7 @@ exports.input = {
 
 	selectWithValue: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.select({
+			this.formInput.select({
 				options: [
 					{ label: 'bar', value: 'b' },
 					{ label: 'foo', value: 'a' }
@@ -73,9 +73,27 @@ exports.input = {
 		test.done();
 	},
 
+	selectWithPluckedValue: function (test) {
+		test.strictEqual(
+			this.formInput.select({
+				name: 'foo',
+				options: [
+					{ label: 'bar', value: 'b' },
+					{ label: 'foo', value: 'a' }
+				],
+				value: { foo: 'a' }
+			}),
+			'<select name="foo">' +
+				'<option value="b">bar</option>' +
+				'<option value="a" selected>foo</option>' +
+			'</select>'
+		);
+		test.done();
+	},
+
 	textAreaWithValue: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.textarea({
+			this.formInput.textarea({
 				name: 'foo',
 				value: { foo: 'bar' }
 			}),
@@ -86,7 +104,7 @@ exports.input = {
 
 	inputWithArrayOfValuesAndChecked: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({
+			this.formInput.input({
 				value: ['a', 'b'],
 				checked: 'b'
 			}),
@@ -98,7 +116,7 @@ exports.input = {
 
 	inputWithArrayOfValuesAndArrayOfChecked: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({
+			this.formInput.input({
 				value: ['a', 'b', 'c'],
 				checked: ['a', 'c']
 			}),
@@ -111,7 +129,7 @@ exports.input = {
 
 	inputsWithArrayOfLabeledValues: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.input({
+			this.formInput.input({
 				type: 'baz',
 				value: [
 					{ label: 'foo', value: 'a' },
@@ -132,7 +150,7 @@ exports.input = {
 
 	feedbackPassedString: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.feedback('foo'),
+			this.formInput.feedback('foo'),
 			'<span>foo</span>'
 		);
 		test.done();
@@ -140,7 +158,7 @@ exports.input = {
 
 	feedbackPassedArrayOfStrings: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.feedback(['foo', 'bar']),
+			this.formInput.feedback(['foo', 'bar']),
 			'<span><ul><li>foo</li><li>bar</li></ul></span>'
 		);
 		test.done();
@@ -148,7 +166,7 @@ exports.input = {
 
 	feedbackPassedObjectWithNameKeyNotFound: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.feedback({ bar: 'baz' }, 'foo'),
+			this.formInput.feedback({ bar: 'baz' }, 'foo'),
 			''
 		);
 		test.done();
@@ -156,7 +174,7 @@ exports.input = {
 
 	feedbackPassedObjectWithNameKeyFoundString: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.feedback({ foo: 'baz' }, 'foo'),
+			this.formInput.feedback({ foo: 'baz' }, 'foo'),
 			'<span>baz</span>'
 		);
 		test.done();
@@ -164,33 +182,33 @@ exports.input = {
 
 	feedbackPassedObjectWithNameKeyFoundArray: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.feedback({ foo: ['a', 'b'] }, 'foo'),
+			this.formInput.feedback({ foo: ['a', 'b'] }, 'foo'),
 			'<span><ul><li>a</li><li>b</li></ul></span>'
 		);
 		test.done();
 	},
 
 	feedbackCustomWrapperString: function (test) {
-		var bootstrapInput = bootstrapInputGenerator({
+		var formInput = formInputGenerator({
 			feedbackOpen: '{',
 			feedbackClose: '}'
 		});
 
 		test.strictEqual(
-			bootstrapInput.feedback('foo'),
+			formInput.feedback('foo'),
 			'{foo}'
 		);
 		test.done();
 	},
 
 	feedbackCustomWrapperArray: function (test) {
-		var bootstrapInput = bootstrapInputGenerator({
+		var formInput = formInputGenerator({
 			feedbackOpen: '{',
 			feedbackClose: '}'
 		});
 
 		test.strictEqual(
-			bootstrapInput.feedback(['a', 'b']),
+			formInput.feedback(['a', 'b']),
 			'{<ul><li>a</li><li>b</li></ul>}'
 		);
 		test.done();
@@ -198,7 +216,7 @@ exports.input = {
 
 	feedbackPassedCustomWrapper: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.feedback('foo', undefined, {
+			this.formInput.feedback('foo', undefined, {
 				feedbackOpen: '<feedback>',
 				feedbackClose: '</feedback>'
 			}),
@@ -209,7 +227,7 @@ exports.input = {
 
 	inputGroupWithNameAndFeedback: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.group({
+			this.formInput.group({
 				label: 'bar',
 				name: 'foo',
 				input: {
@@ -230,7 +248,7 @@ exports.input = {
 
 	selectGroupWithName: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.group({
+			this.formInput.group({
 				label: 'bar',
 				name: 'foo',
 				select: {
@@ -256,7 +274,7 @@ exports.input = {
 
 	textareaGroupWithName: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.group({
+			this.formInput.group({
 				label: 'bar',
 				name: 'foo',
 				textarea: { value: 'a' }
@@ -273,7 +291,7 @@ exports.input = {
 
 	groupWithCustomOpenAndClose: function (test) {
 		test.strictEqual(
-			this.bootstrapInput.group({
+			this.formInput.group({
 				label: 'foo',
 				input: { a: 'b' },
 				feedback: 'bar',
