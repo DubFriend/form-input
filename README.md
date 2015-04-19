@@ -56,7 +56,7 @@ formInput.input({
 If passed a array value attribute and a checked attribute, the matching checked
 values will be given a "checked" attribute.
 ```javascript
-this.formInput.input({
+formInput.input({
 	type: 'radio',
 	value: ['a', 'b'],
 	checked: 'b'
@@ -70,7 +70,7 @@ this.formInput.input({
 If passed a array value attribute and an array checked attribute, the matching checked
 values will be given a "checked" attribute.
 ```javascript
-this.formInput.input({
+formInput.input({
 	type: 'checkbox',
 	value: ['a', 'b', 'c'],
 	checked: ['a', 'b']
@@ -188,7 +188,7 @@ behave the same as their counterpart methods documented above.
 
 The name attribute can be pulled to the top level of the configuration, and will
 be used by input and feedback as shown below.
-```javscript
+```javascript
 formInput.group({
 	label: 'bar',
 	name: 'foo',
@@ -209,7 +209,7 @@ formInput.group({
 ```
 
 An example using a `select` input
-```javscript
+```javascript
 formInput.group({
 	label: 'bar',
 	name: 'foo',
@@ -240,7 +240,7 @@ either globally
 ```javascript
 var formInput = require('form-input')({
 	groupOpen: '<group>',
-	groupClose: </group>
+	groupClose: '</group>'
 });
 ```
 Or when calling the feedback or group methods

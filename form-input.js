@@ -1,4 +1,4 @@
-// form-input version 0.1.0
+// form-input version 0.1.1
 // https://github.com/DubFriend/form-input
 // (MIT) 19-04-2015
 // Brian Detering
