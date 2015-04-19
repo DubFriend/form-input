@@ -196,6 +196,17 @@ exports.input = {
 		test.done();
 	},
 
+	feedbackPassedCustomWrapper: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.feedback('foo', undefined, {
+				feedbackOpen: '<feedback>',
+				feedbackClose: '</feedback>'
+			}),
+			'<feedback>foo</feedback>'
+		);
+		test.done();
+	},
+
 	inputGroupWithNameAndFeedback: function (test) {
 		test.strictEqual(
 			this.bootstrapInput.group({
@@ -256,6 +267,32 @@ exports.input = {
 					'<textarea name="foo">a</textarea>' +
 				'</div>' +
 			'</div>'
+		);
+		test.done();
+	},
+
+	groupWithCustomOpenAndClose: function (test) {
+		test.strictEqual(
+			this.bootstrapInput.group({
+				label: 'foo',
+				input: { a: 'b' },
+				feedback: 'bar',
+				feedbackOpen: '<feedback>',
+				feedbackClose: '</feedback>',
+				labelOpen: '<foo-label>',
+				labelClose: '</foo-label>',
+				groupOpen: '<group>',
+				groupClose: '</group>',
+				groupControlOpen: '<group-control>',
+				groupControlClose: '</group-control>'
+			}),
+			'<group>' +
+				'<foo-label>foo</foo-label>' +
+				'<group-control>' +
+					'<input a="b"/>' +
+					'<feedback>bar</feedback>' +
+				'</group-control>' +
+			'</group>'
 		);
 		test.done();
 	}

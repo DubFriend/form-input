@@ -46,7 +46,11 @@ var bootstrapInput = function (fig) {
         })).join(' ');
     };
 
-    self.feedback = function (fig, name) {
+    self.feedback = function (fig, name, wrap) {
+        wrap = wrap || {};
+        wrap.feedbackOpen = wrap.feedbackOpen || feedbackOpen;
+        wrap.feedbackClose = wrap.feedbackClose || feedbackClose;
+
         if(isObject(fig)) {
             if(fig[name]) {
                 return self.feedback(fig[name]);
@@ -61,7 +65,7 @@ var bootstrapInput = function (fig) {
             }, '') + '</ul>');
         }
         else {
-            return feedbackOpen + fig + feedbackClose;
+            return wrap.feedbackOpen + fig + wrap.feedbackClose;
         }
     };
 
@@ -117,9 +121,19 @@ var bootstrapInput = function (fig) {
     };
 
     self.group = function (fig) {
+        var wrap = {};
+        wrap.feedbackOpen = fig.feedbackOpen || feedbackOpen;
+        wrap.feedbackClose = fig.feedbackClose || feedbackClose;
+        wrap.labelOpen = fig.labelOpen || labelOpen;
+        wrap.labelClose = fig.labelClose || labelClose;
+        wrap.groupOpen = fig.groupOpen || groupOpen;
+        wrap.groupClose = fig.groupClose || groupClose;
+        wrap.groupControlOpen = fig.groupControlOpen || groupControlOpen;
+        wrap.groupControlClose = fig.groupControlClose || groupControlClose;
 
-        var feedbackText = fig.feedback ? self.feedback(fig.feedback, fig.name) : '';
-        var labelText = fig.label ? labelOpen + fig.label + labelClose : '';
+
+        var feedbackText = fig.feedback ? self.feedback(fig.feedback, fig.name, wrap) : '';
+        var labelText = fig.label ? wrap.labelOpen + fig.label + wrap.labelClose : '';
 
         var controlFig = fig.input || fig.select || fig.textarea;
         controlFig = fig.name ? union({ name: fig.name }, controlFig) : controlFig;
@@ -135,17 +149,16 @@ var bootstrapInput = function (fig) {
             controlText = self.textarea(controlFig);
         }
 
-        return groupOpen +
+        return wrap.groupOpen +
                labelText  +
-               groupControlOpen +
+               wrap.groupControlOpen +
                controlText +
                feedbackText +
-               groupControlClose +
-               groupClose;
+               wrap.groupControlClose +
+               wrap.groupClose;
     };
 
     return self;
-
 };
 
 
