@@ -8,22 +8,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        // preprocess : {
-        //     options: {
-        //         context : {
-        //             DEBUG: true
-        //         }
-        //     },
-        //     test : {
-        //         src : 'test/index.pre.html',
-        //         dest : 'test/index.html'
-        //     },
-        //     index: {
-        //         src: 'index.pre.html',
-        //         dest: 'index.html'
-        //     }
-        // },
-
         concat: {
             options: {
                 separator: '\n',
@@ -61,7 +45,6 @@ module.exports = function (grunt) {
 
     });
 
-    // grunt.loadNpmTasks('grunt-preprocess');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');

@@ -20,18 +20,6 @@ var isFunction = function (value) {
     return value instanceof Function;
 };
 
-var inverse = function (object) {
-    var inverted = {};
-    foreach(object, function (val, key) {
-        inverted[val] = key;
-    });
-    return inverted;
-};
-
-var toInt = function (value) {
-    return parseInt(value, 10);
-};
-
 var bind = function (f, object) {
     return function () {
         return f.apply(object, arguments);
@@ -56,23 +44,6 @@ var argumentsToArray = function (args) {
     return array;
 };
 
-var isEmpty = function (object) {
-    for(var i in object) {
-        if(object.hasOwnProperty(i)) {
-            return false;
-        }
-    }
-    return true;
-};
-
-var isNumeric = function (candidate) {
-    return !isNaN(candidate);
-};
-
-var isInteger = function (candidate) {
-    return isNumeric(candidate) && Number(candidate) % 1 === 0;
-};
-
 var indexOf = function (array, value) {
     return array.indexOf(value);
 };
@@ -81,45 +52,12 @@ var inArray = function (array, value) {
     return indexOf(array, value) !== -1;
 };
 
-//deep copy of json objects
-var copy = function (object) {
-    return $.extend(true, {}, object);
-};
-
-var shallowCopy = function (objects) {
-    return map(objects, identity);
-};
-
 var foreach = function (collection, callback) {
     for(var i in collection) {
         if(collection.hasOwnProperty(i)) {
             callback(collection[i], i, collection);
         }
     }
-};
-
-var range = function (a, b) {
-    var i, start, end, array = [];
-    if(b === undefined) {
-        start = 0;
-        end = a - 1;
-    }
-    else {
-        start = a;
-        end = b;
-    }
-    for(i = start; i <= end; i += 1) {
-        array.push(i);
-    }
-    return array;
-};
-
-var reverse = function (array) {
-    var reversed = [], i;
-    for(i = array.length - 1; i >= 0; i -= 1) {
-        reversed.push(array[i]);
-    }
-    return reversed;
 };
 
 var last = function (array) {
@@ -143,12 +81,6 @@ var mapToObject = function (collection, callback, keyCallback) {
     return mapped;
 };
 
-var appendKey = function (appendingString, collection) {
-    return map(collection, identity, function (key) {
-        return appendingString + key;
-    });
-};
-
 var map = function (collection, callback, keyCallback) {
     return isArray(collection) ?
         mapToArray(collection, callback) :
@@ -158,24 +90,6 @@ var map = function (collection, callback, keyCallback) {
 var pluck = function(collection, key) {
     return map(collection, function (value) {
         return value[key];
-    });
-};
-
-var call = function (collection, functionName, args) {
-    return map(collection, function (object, name) {
-        return object[functionName].apply(object, args || []);
-    });
-};
-
-var keys = function (collection) {
-    return mapToArray(collection, function (val, key) {
-        return key;
-    });
-};
-
-var values = function (collection) {
-    return mapToArray(collection, function (val) {
-        return val;
     });
 };
 
@@ -210,12 +124,6 @@ var filter = function (collection, callback) {
     return filtered;
 };
 
-var filterFalsey = function (collection) {
-    return filter(collection, function (val) {
-        return val;
-    });
-};
-
 var filterUndefined = function (collection) {
     return filter(collection, function (val) {
         return val !== undefined;
@@ -232,25 +140,9 @@ var union = function () {
     return united;
 };
 
-var subSet = function (object, subsetKeys) {
-    return filter(object, function (value, key) {
-        return indexOf(subsetKeys, key) !== -1;
-    });
-};
-
-var doesContainKeys = function (object, keyNames) {
-    return keys(subSet(object, keyNames)).length === keyNames.length;
-};
-
 var excludedSet = function (object, excludedKeys) {
     return filter(object, function (value, key) {
         return indexOf(excludedKeys, key) === -1;
-    });
-};
-
-var remove = function (collection, item) {
-    return filter(collection, function (element) {
-        return element !== item;
     });
 };
 
@@ -260,34 +152,6 @@ var generateUniqueID = (function () {
         return count += 1;
     };
 }());
-
-var mixinPubSub = function (object) {
-    object = object || {};
-    var topics = {};
-
-    object.publish = function (topic, data) {
-        foreach(topics[topic], function (callback) {
-            callback(data);
-        });
-    };
-
-    object.subscribe = function (topic, callback) {
-        topics[topic] = topics[topic] || [];
-        topics[topic].push(callback);
-    };
-
-    object.unsubscribe = function (callback) {
-        foreach(topics, function (subscribers) {
-            var index = indexOf(subscribers, callback);
-            if(index !== -1) {
-                subscribers.splice(index, 1);
-            }
-        });
-    };
-
-    return object;
-};
-
 var bootstrapInput = function (fig) {
     'use strict';
 
