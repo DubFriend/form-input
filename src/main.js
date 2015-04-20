@@ -120,6 +120,22 @@ var formInputGenerator = function (fig) {
         '</textarea>';
     };
 
+    var isHTMLLabel = function (labelOpen) {
+        return /^<label/i.test(labelOpen);
+    };
+
+    var addForAttributeToLabelOpen = function (labelOpen, attr) {
+        if(isHTMLLabel(labelOpen) && attr.id !== undefined) {
+            var pieces = labelOpen.split(/^<label/i);
+            pieces.shift();
+            pieces.unshift('<label for="' + attr.id + '"');
+            return pieces.join('');
+        }
+        else {
+            return labelOpen;
+        }
+    };
+
     self.group = function (fig) {
         var wrap = {};
         wrap.feedbackOpen = fig.feedbackOpen || feedbackOpen;
@@ -131,12 +147,12 @@ var formInputGenerator = function (fig) {
         wrap.groupControlOpen = fig.groupControlOpen || groupControlOpen;
         wrap.groupControlClose = fig.groupControlClose || groupControlClose;
 
-
         var feedbackText = fig.feedback ? self.feedback(fig.feedback, fig.name, wrap) : '';
-        var labelText = fig.label ? wrap.labelOpen + fig.label + wrap.labelClose : '';
 
         var controlFig = fig.input || fig.select || fig.textarea;
         controlFig = fig.name ? union({ name: fig.name }, controlFig) : controlFig;
+
+        var labelText = fig.label ? addForAttributeToLabelOpen(wrap.labelOpen, controlFig) + fig.label + wrap.labelClose : '';
 
         var controlText;
         if(fig.input) {
