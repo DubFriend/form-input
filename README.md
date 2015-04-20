@@ -234,6 +234,24 @@ formInput.group({
 </div>
 ```
 
+If the label is recognized as an html type label tag, and the input is given an
+id attribute, then the label will be given a matching "for" attribute
+```javascript
+formInput.group({
+	label: 'bar',
+	input: { id: 'foo' }
+})
+```
+```html
+<div>
+	<label for="foo">bar</label>
+	<div>
+		<input id="foo"/>
+	</div>
+</div>
+```
+
+
 ##Custom open and close tags
 Most of the closing an opening tags can be overriden
 either globally
